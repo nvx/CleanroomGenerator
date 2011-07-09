@@ -1,6 +1,9 @@
 package net.neo_vortex.bukkit.CleanroomGenerator;
 
+import java.security.PrivateKey;
+import java.sql.Struct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Location;
@@ -9,72 +12,94 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
+import static java.lang.System.arraycopy;
+
 public class CleanroomChunkGenerator extends ChunkGenerator
 {
-    private int height;
-    private byte block;
+    private byte[] chunk = new byte[32768];
 
     public CleanroomChunkGenerator()
     {
-        height = 64;
-        block = (byte)Material.STONE.getId();
+        this("64,stone");
     }
 
     public CleanroomChunkGenerator(String id)
     {
+        byte[] layer = new byte[128];
+        layer[0] = (byte)Material.BEDROCK.getId(); // Bottom layer is always bedrock.
+
         if (id != null)
         {
             try
             {
                 String tokens[] = id.split("[,]");
-                height = Integer.parseInt(tokens[0]);
-                if ((height < 0) || (height > 127))
-                {
-                    System.out.println("Invalid CleanroomGenerator ID '" + id + "'. Invalid height. Using 63 instead.");
-                    height = 64;
-                }
 
-                Material mat = Material.getMaterial(tokens[1]);
-                if (mat == null)
+                if ((tokens.length % 2) != 0) throw new Exception();
+
+                int y = 1; // Bedrock is at 0, so we start at 1
+                for (int i = 0; i < tokens.length; i += 2)
                 {
-                    mat = Material.getMaterial(Integer.parseInt(tokens[1]));
-                }
-                if (mat == null)
-                {
-                    System.out.println("Invalid CleanroomGenerator ID '" + id + "'. Invalid block #. Using stone instead.");
-                    block = 1;
-                } else
-                {
-                    block = (byte)mat.getId();
+                    int height = Integer.parseInt(tokens[i]);
+                    if ((height <= 0) || (height > 127))
+                    {
+                        System.out.println("Invalid height '"  + tokens[i] + "'. Using 64 instead.");
+                        height = 64;
+                    }
+
+                    if ((height + y) > 127)
+                    {
+                        System.out.println("Maximum height reached, ignoring additional layers.");
+                        break;
+                    }
+
+                    Material mat = Material.matchMaterial(tokens[i + 1]);
+                    if (mat == null)
+                    {
+                        try
+                        {
+                            // Mabe it's an integer?
+                            mat = Material.getMaterial(Integer.parseInt(tokens[i + 1]));
+                        } catch (Exception e)
+                        {
+                            // Well, I guess it wasn't an integer after all... Awkward...
+                        }
+
+                        if (mat == null)
+                        {
+                            System.out.println("Invalid Block ID '" + tokens[i + 1] + "'. Defaulting to stone.");
+                            mat = Material.STONE;
+                        }
+                    }
+
+                    if (!mat.isBlock())
+                    {
+                        System.out.println("Error, '" + tokens[i + 1] + "' is not a block. Defaulting to stone.");
+                        mat = Material.STONE;
+                    }
+
+                    Arrays.fill(layer, y, y + height, (byte)mat.getId());
+                    y += height;
                 }
             } catch(Exception e)
             {
-                height = 64;
-                block = (byte)Material.STONE.getId();
-                System.out.println("Error parsing CleanroomGenerator ID '" + id + "'. using defaults (64,1).");
+                System.out.println("Error parsing CleanroomGenerator ID '" + id + "'. using defaults '64,1': " + e.toString());
+                Arrays.fill(layer, 1, 65, (byte)Material.STONE.getId());
+                Arrays.fill(layer, 65, 128, (byte)Material.AIR.getId()); // Just in case...
             }
         } else
         {
-            height = 64;
-            block = (byte)Material.STONE.getId();
+            Arrays.fill(layer, 1, 65, (byte)Material.STONE.getId());
+        }
+
+        for (int i = 0; i < 256; i++)
+        {
+            arraycopy(layer, 0, chunk, i * 128, layer.length);
         }
     }
 
     public byte[] generate(World world, Random random, int cx, int cz)
     {
-        byte[] chunk = new byte[32768];
-        for (int x = 0; x < 16; x++)
-        {
-            for (int z = 0; z < 16; z++)
-            {
-                chunk[(x * 16 + z) * 128] = (byte)Material.BEDROCK.getId(); // Bottom layer is always bedrock.
-                for (int y = 1; y < height; y++)
-                {
-                    chunk[(x * 16 + z) * 128 + y] = block;
-                }
-            }
-        }
-        return chunk;
+        return chunk.clone(); // Can't get more efficient than that...
     }
 
     @Override
@@ -87,6 +112,6 @@ public class CleanroomChunkGenerator extends ChunkGenerator
     @Override
     public Location getFixedSpawnLocation(World world, Random random)
     {
-        return new Location(world, 0, height + 2, 0);
+        return new Location(world, 0, world.getHighestBlockYAt(0, 0), 0);
     }
 }
