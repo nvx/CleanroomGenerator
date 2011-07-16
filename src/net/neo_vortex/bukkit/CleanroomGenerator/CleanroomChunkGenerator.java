@@ -128,6 +128,11 @@ public class CleanroomChunkGenerator extends ChunkGenerator
     @Override
     public Location getFixedSpawnLocation(World world, Random random)
     {
+        if (!world.isChunkLoaded(0, 0))
+        {
+            world.loadChunk(0, 0);
+        }
+
         return new Location(world, 0, world.getHighestBlockYAt(0, 0), 0);
     }
 }

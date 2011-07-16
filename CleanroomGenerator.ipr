@@ -352,7 +352,10 @@
         <root url="file://$PROJECT_DIR$/Libs" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../Bukkit/Bukkit/src/main/java" />
+        <root url="file://$PROJECT_DIR$/../Bukkit/CraftBukkit/src/main/java" />
+      </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/Libs" recursive="false" />
     </library>
   </component>
