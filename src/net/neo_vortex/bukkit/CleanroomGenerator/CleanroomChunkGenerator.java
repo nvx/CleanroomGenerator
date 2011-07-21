@@ -22,9 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import com.sun.javaws.IcoEncoder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -42,74 +45,87 @@ public class CleanroomChunkGenerator extends ChunkGenerator
     public CleanroomChunkGenerator(String id)
     {
         byte[] layer = new byte[128];
-        layer[0] = (byte)Material.BEDROCK.getId(); // Bottom layer is always bedrock.
-
         if (id != null)
         {
             try
             {
-                String tokens[] = id.split("[,]");
+                int y = 0;
 
-                if ((tokens.length % 2) != 0) throw new Exception();
-
-                int y = 1; // Bedrock is at 0, so we start at 1
-                for (int i = 0; i < tokens.length; i += 2)
+                if ((id.length() > 0) && (id.charAt(0) == '.')) // Is the first character a '.'? If so, skip bedrock generation.
                 {
-                    int height = Integer.parseInt(tokens[i]);
-                    if ((height <= 0) || (height > 127))
-                    {
-                        System.out.println("Invalid height '"  + tokens[i] + "'. Using 64 instead.");
-                        height = 64;
-                    }
+                    id = id.substring(1); // Skip bedrock then and remove the .
+                } else // Guess not, bedrock at layer0 it is then.
+                {
+                    layer[y++] = (byte)Material.BEDROCK.getId();
+                }
 
-                    if ((height + y) > 127)
-                    {
-                        System.out.println("Maximum height reached, ignoring additional layers.");
-                        break;
-                    }
+                if (id.length() > 0)
+                {
+                    String tokens[] = id.split("[,]");
 
-                    Material mat = Material.matchMaterial(tokens[i + 1]);
-                    if (mat == null)
+                    if ((tokens.length % 2) != 0) throw new Exception();
+
+                    for (int i = 0; i < tokens.length; i += 2)
                     {
-                        try
+                        int height = Integer.parseInt(tokens[i]);
+                        if ((height <= 0) || (height > 127))
                         {
-                            // Mabe it's an integer?
-                            mat = Material.getMaterial(Integer.parseInt(tokens[i + 1]));
-                        } catch (Exception e)
-                        {
-                            // Well, I guess it wasn't an integer after all... Awkward...
+                            System.out.println("Invalid height '"  + tokens[i] + "'. Using 64 instead.");
+                            height = 64;
                         }
 
+                        if ((height + y) > 127)
+                        {
+                            System.out.println("Maximum height reached, ignoring additional layers.");
+                            break;
+                        }
+
+                        Material mat = Material.matchMaterial(tokens[i + 1]);
                         if (mat == null)
                         {
-                            System.out.println("Invalid Block ID '" + tokens[i + 1] + "'. Defaulting to stone.");
+                            try
+                            {
+                                // Mabe it's an integer?
+                                mat = Material.getMaterial(Integer.parseInt(tokens[i + 1]));
+                            } catch (Exception e)
+                            {
+                                // Well, I guess it wasn't an integer after all... Awkward...
+                            }
+
+                            if (mat == null)
+                            {
+                                System.out.println("Invalid Block ID '" + tokens[i + 1] + "'. Defaulting to stone.");
+                                mat = Material.STONE;
+                            }
+                        }
+
+                        if (!mat.isBlock())
+                        {
+                            System.out.println("Error, '" + tokens[i + 1] + "' is not a block. Defaulting to stone.");
                             mat = Material.STONE;
                         }
-                    }
 
-                    if (!mat.isBlock())
-                    {
-                        System.out.println("Error, '" + tokens[i + 1] + "' is not a block. Defaulting to stone.");
-                        mat = Material.STONE;
+                        Arrays.fill(layer, y, y + height, (byte)mat.getId());
+                        y += height;
                     }
-
-                    Arrays.fill(layer, y, y + height, (byte)mat.getId());
-                    y += height;
                 }
             } catch(Exception e)
             {
                 System.out.println("Error parsing CleanroomGenerator ID '" + id + "'. using defaults '64,1': " + e.toString());
+                e.printStackTrace();
+                layer[0] = (byte)Material.BEDROCK.getId();
                 Arrays.fill(layer, 1, 65, (byte)Material.STONE.getId());
                 Arrays.fill(layer, 65, 128, (byte)Material.AIR.getId()); // Just in case...
             }
         } else
         {
+            layer[0] = (byte)Material.BEDROCK.getId();
             Arrays.fill(layer, 1, 65, (byte)Material.STONE.getId());
         }
 
-        for (int i = 0; i < 256; i++)
+        for (int xz = 0; xz < 256; xz++)
         {
-            arraycopy(layer, 0, chunk, i * 128, layer.length);
+            arraycopy(layer, 0, chunk, xz * 128, layer.length);
         }
     }
 
@@ -131,6 +147,11 @@ public class CleanroomChunkGenerator extends ChunkGenerator
         if (!world.isChunkLoaded(0, 0))
         {
             world.loadChunk(0, 0);
+        }
+
+        if ((world.getHighestBlockYAt(0, 0) <= 0) && (world.getBlockAt(0, 0, 0).getType() == Material.AIR)) // SPACE!
+        {
+            return new Location(world, 0, 64, 0); // Lets allow people to drop a little before hitting the void then shall we?
         }
 
         return new Location(world, 0, world.getHighestBlockYAt(0, 0), 0);
