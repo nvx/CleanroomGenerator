@@ -34,6 +34,7 @@ import static java.lang.System.arraycopy;
 public class CleanroomChunkGenerator extends ChunkGenerator
 {
     private byte[] chunk = new byte[32768];
+    private String gridSetting = null;
 
     public CleanroomChunkGenerator()
     {
@@ -47,6 +48,12 @@ public class CleanroomChunkGenerator extends ChunkGenerator
         {
             try
             {
+            	String[] parts = id.split("[;]");
+            	id = parts.length == 0 ? "" : parts[0];
+            	if(parts.length >= 2) {
+            		this.gridSetting = parts[1];
+            	}
+            	
                 int y = 0;
 
                 if ((id.length() > 0) && (id.charAt(0) == '.')) // Is the first character a '.'? If so, skip bedrock generation.
@@ -135,8 +142,11 @@ public class CleanroomChunkGenerator extends ChunkGenerator
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world)
     {
-        // This is the default, but just in case default populators change to stock minecraft populators by default...
-        return new ArrayList<BlockPopulator>();
+    	List<BlockPopulator> populators = new ArrayList<BlockPopulator>();
+    	if(this.gridSetting != null) {
+    		populators.add(new GridPopulator(this.gridSetting));
+    	}
+        return populators;
     }
 
     @Override
