@@ -23,11 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import com.sun.javaws.IcoEncoder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
