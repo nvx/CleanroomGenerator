@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.Material;
 
+// Add grid on the ground.
 public class GridPopulator extends BlockPopulator {
 	
 	static public class GridSetting {
@@ -27,6 +28,12 @@ public class GridPopulator extends BlockPopulator {
 		
 	}
 	
+	// e.g. "6,sandstone,3,sand,2,cobblestone,1,gravel"
+	// means there will be 12-width sandstone lines between every region (32*32 chunks = 512*512 blocks),
+	// 6-width sand lines divide it into 4 parts,
+	// 4-width cobblestones line divide every part into 4 small parts,
+	// 2-width gravel lines divide every small part into 4 more small parts.
+	// A region is like this: http://i.imgur.com/UHdja.png
 	public GridPopulator(String settings) {
 		String tokens[] = settings.split("[,]");
 
