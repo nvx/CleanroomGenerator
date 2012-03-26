@@ -1,6 +1,6 @@
 /*
  * Cleanroom Generator
- * Copyright (C) 2011 nvx
+ * Copyright (C) 2011-2012 nvx
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,20 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.neo_vortex.bukkit.CleanroomGenerator;
+package io.nv.bukkit.CleanroomGenerator;
 
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public class CleanroomGenerator extends JavaPlugin
 {
+    private Logger log = Logger.getLogger("Minecraft");
     PluginDescriptionFile pluginDescriptionFile;
 
     public void onEnable()
     {
         pluginDescriptionFile = getDescription();
-        System.out.println(pluginDescriptionFile.getName() + " version " + pluginDescriptionFile.getVersion() + " is enabled!");
+        log.info("[CleanroomGenerator] " + pluginDescriptionFile.getFullName() + " enabled");
     }
 
     public void onDisable()
