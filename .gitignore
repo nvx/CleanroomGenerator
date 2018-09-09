@@ -1,4 +1,3 @@
-
-/Libs
-/CleanroomGenerator.iws
-/out
+.idea
+*.iml
+/target

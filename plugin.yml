@@ -1,8 +1,0 @@
-name: CleanroomGenerator
-main: io.nv.bukkit.CleanroomGenerator.CleanroomGenerator
-version: 1.0.0
-website: http://dev.bukkit.org/server-mods/cleanroomgenerator/
-dev-url: http://dev.bukkit.org/server-mods/cleanroomgenerator/
-author: NVX (Neo_Vortex)
-description: Custom world generator to generate flat clean rooms. y==0 is bedrock layer=height,block[:datavalue] generator id=layer[,layer[,...]] - Prefix . at the start of the ID to skip bedrock generation at layer0
-load: startup
