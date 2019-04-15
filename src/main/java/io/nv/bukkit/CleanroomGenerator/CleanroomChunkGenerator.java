@@ -35,6 +35,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         }
 
         try {
+            id = id.replace(',', '|');
             if (id.charAt(0) != '.') {
                 // Unless the id starts with a '.' make the first layer bedrock
                 id = "1|minecraft:bedrock|" + id;
