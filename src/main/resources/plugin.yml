@@ -1,6 +1,7 @@
 main: io.nv.bukkit.CleanroomGenerator.CleanroomGenerator
 name: ${project.artifactId}
 version: ${project.version}
+api-version: 1.13
 website: ${plugin.website}
 author: ${plugin.author}
 description: ${project.description}
