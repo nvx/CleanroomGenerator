@@ -17,6 +17,8 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
     private Logger log = Logger.getLogger("Minecraft");
     private BlockData[] layerBlock;
     private int[] layerHeight;
+    private boolean noBedrock = false;
+    private boolean newHeight = false;
 
     public CleanroomChunkGenerator() {
         this("");
@@ -35,12 +37,18 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         }
 
         try {
-            if (id.charAt(0) != '.') {
+            while (id.charAt(0) == '.' || id.charAt(0) == '^'){
+                if (id.charAt(0) == '.'){
+                    noBedrock = true;
+                }
+                if (id.charAt(0) == '^'){
+                    newHeight = true;
+                }
+                id = id.substring(1);
+            }
+            if (!noBedrock) {
                 // Unless the id starts with a '.' make the first layer bedrock
                 id = "1|minecraft:bedrock|" + id;
-            } else {
-                // Else remove the . and don't add the bedrock
-                id = id.substring(1);
             }
 
             String tokens[];
@@ -92,6 +100,9 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         ChunkData chunk = createChunkData(world);
 
         int y = 0;
+        if (newHeight){
+            y = -64;
+        }
         for (int i = 0; i < layerBlock.length; i++) {
             chunk.setRegion(0, y, 0, 16, y + layerHeight[i], 16, layerBlock[i]);
             y += layerHeight[i];
