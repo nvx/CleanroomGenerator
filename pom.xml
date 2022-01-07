@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.nv.bukkit</groupId>
     <artifactId>CleanroomGenerator</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <name>Cleanroom Generator</name>
     <description>Custom world generator to generate flat clean rooms. y==0 is bedrock layer=height,block[:datavalue] generator id=layer[|layer[|...]] - Prefix . at the start of the ID to skip bedrock generation at layer0
     </description>
@@ -13,6 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.author>NVX (Neo_Vortex)</plugin.author>
         <plugin.website>https://dev.bukkit.org/projects/cleanroomgenerator</plugin.website>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
