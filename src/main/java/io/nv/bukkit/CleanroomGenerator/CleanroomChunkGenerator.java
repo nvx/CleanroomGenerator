@@ -7,11 +7,8 @@ import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Logger;
-
-import static java.lang.System.arraycopy;
 
 public class CleanroomChunkGenerator extends ChunkGenerator {
     private Logger log = Logger.getLogger("Minecraft");
@@ -37,11 +34,11 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         }
 
         try {
-            while (id.charAt(0) == '.' || id.charAt(0) == '^'){
-                if (id.charAt(0) == '.'){
+            while (id.charAt(0) == '.' || id.charAt(0) == '^') {
+                if (id.charAt(0) == '.') {
                     noBedrock = true;
                 }
-                if (id.charAt(0) == '^'){
+                if (id.charAt(0) == '^') {
                     newHeight = true;
                 }
                 id = id.substring(1);
@@ -73,8 +70,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
                 try {
                     blockData = Bukkit.createBlockData(tokens[j + 1]);
                 } catch (Exception e) {
-                    log.warning("[CleanroomGenerator] Failed to lookup block '" + tokens[j + 1] + "'. Using stone instead. Exception: " +
-                            e.toString());
+                    log.warning("[CleanroomGenerator] Failed to lookup block '" + tokens[j + 1] + "'. Using stone instead. Exception: " + e.toString());
                     blockData = Material.STONE.createBlockData();
                 }
 
@@ -100,7 +96,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         ChunkData chunk = createChunkData(world);
 
         int y = 0;
-        if (newHeight){
+        if (newHeight) {
             y = -64;
         }
         for (int i = 0; i < layerBlock.length; i++) {
