@@ -1,6 +1,5 @@
 package io.nv.bukkit.CleanroomGenerator;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -28,79 +27,12 @@ public class NewCleanroomChunkGenerator extends ChunkGenerator {
     private boolean noBedrock = false;
     private boolean newHeight = false;
 
-    public NewCleanroomChunkGenerator() {
-        this("");
-    }
-
     NewCleanroomChunkGenerator(String id) {
-        if (id == null || id.equals("")) {
-            id = "64|stone";
-        }
-
-        if (id.equals(".")) {
-            // Void world early exit to simplify later code
-            layerBlock = new BlockData[0];
-            layerHeight = new int[0];
-            noBedrock = true; // FIX: no creation of bedrock on empty worlds
-            return;
-        }
-
-        try {
-            while (id.charAt(0) == '.' || id.charAt(0) == '^') {
-                if (id.charAt(0) == '.') {
-                    noBedrock = true;
-                }
-                if (id.charAt(0) == '^') {
-                    newHeight = true;
-                }
-                id = id.substring(1);
-            }
-            if (!noBedrock) {
-                // Unless the id starts with a '.' make the first layer bedrock
-                id = "1|minecraft:bedrock|" + id;
-            }
-
-            String tokens[];
-
-            tokens = id.split("[|]");
-
-            if ((tokens.length % 2) != 0) throw new Exception();
-
-            int layerCount = tokens.length / 2;
-            layerBlock = new BlockData[layerCount];
-            layerHeight = new int[layerCount];
-
-            for (int i = 0; i < layerCount; i++) {
-                int j = i * 2;
-                int height = Integer.parseInt(tokens[j]);
-                if (height <= 0) {
-                    log.warning("[CleanroomGenerator] Invalid height '" + tokens[j] + "'. Using 64 instead.");
-                    height = 64;
-                }
-
-                BlockData blockData;
-                try {
-                    blockData = Bukkit.createBlockData(tokens[j + 1]);
-                } catch (Exception e) {
-                    log.warning("[CleanroomGenerator] Failed to lookup block '" + tokens[j + 1] + "'. Using stone instead. Exception: " + e);
-                    blockData = Material.STONE.createBlockData();
-                }
-
-                layerBlock[i] = blockData;
-                layerHeight[i] = height;
-            }
-        } catch (Exception e) {
-            log.severe("[CleanroomGenerator] Error parsing CleanroomGenerator ID '" + id + "'. using defaults '64,1': " + e);
-            e.printStackTrace();
-
-            layerBlock = new BlockData[2];
-            layerBlock[0] = Material.BEDROCK.createBlockData();
-            layerBlock[1] = Material.STONE.createBlockData();
-
-            layerHeight = new int[2];
-            layerHeight[0] = 1;
-            layerHeight[1] = 64;
-        }
+        IDParser parser = new IDParser(id);
+        this.layerBlock = parser.getLayerBlock();
+        this.layerHeight = parser.getLayerHeight();
+        this.noBedrock = parser.isNoBedrock();
+        this.newHeight = parser.isNewHeight();
     }
 
     @Override
