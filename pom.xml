@@ -5,7 +5,7 @@
 
     <groupId>io.nv.bukkit</groupId>
     <artifactId>CleanroomGenerator</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>Cleanroom Generator</name>
     <description>Custom world generator to generate flat clean rooms. y==0 is bedrock layer=height,block[:datavalue] generator id=layer[|layer[|...]] - Prefix . at the start of the ID to skip bedrock generation at layer0</description>
 
