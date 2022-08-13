@@ -30,6 +30,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             // Void world early exit to simplify later code
             layerBlock = new BlockData[0];
             layerHeight = new int[0];
+            noBedrock = true;
             return;
         }
 
@@ -45,7 +46,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             }
             if (!noBedrock) {
                 // Unless the id starts with a '.' make the first layer bedrock
-                id = "1|minecraft:bedrock|" + id;
+                id = "1|bedrock|" + id;
             }
 
             String tokens[];
@@ -70,7 +71,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
                 try {
                     blockData = Bukkit.createBlockData(tokens[j + 1]);
                 } catch (Exception e) {
-                    log.warning("[CleanroomGenerator] Failed to lookup block '" + tokens[j + 1] + "'. Using stone instead. Exception: " + e.toString());
+                    log.warning("[CleanroomGenerator] Failed to lookup block '" + tokens[j + 1] + "'. Using stone instead. Exception: " + e);
                     blockData = Material.STONE.createBlockData();
                 }
 
@@ -78,7 +79,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
                 layerHeight[i] = height;
             }
         } catch (Exception e) {
-            log.severe("[CleanroomGenerator] Error parsing CleanroomGenerator ID '" + id + "'. using defaults '64,1': " + e.toString());
+            log.severe("[CleanroomGenerator] Error parsing CleanroomGenerator ID '" + id + "'. using defaults '64,1': " + e);
             e.printStackTrace();
 
             layerBlock = new BlockData[2];
@@ -117,7 +118,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
 
         if ((highestBlock <= 0) && (world.getBlockAt(0, 0, 0).getType() == Material.AIR)) // SPACE!
         {
-            return new Location(world, 0, 64, 0); // Lets allow people to drop a little before hitting the void then shall we?
+            return new Location(world, 0, 64, 0); // Let's allow people to drop a little before hitting the void then shall we?
         }
 
         return new Location(world, 0, highestBlock, 0);
