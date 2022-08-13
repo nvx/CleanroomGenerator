@@ -27,7 +27,11 @@ public class NewCleanroomChunkGenerator extends ChunkGenerator {
     private boolean noBedrock = false;
     private boolean newHeight = false;
 
-    NewCleanroomChunkGenerator(String id) {
+    public NewCleanroomChunkGenerator() {
+        this("");
+    }
+
+    public NewCleanroomChunkGenerator(String id) {
         IDParser parser = new IDParser(id);
         this.layerBlock = parser.getLayerBlock();
         this.layerHeight = parser.getLayerHeight();

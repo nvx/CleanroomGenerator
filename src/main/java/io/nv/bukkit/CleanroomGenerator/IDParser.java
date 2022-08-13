@@ -19,7 +19,7 @@ public class IDParser {
     private boolean noBedrock = false;
     private boolean newHeight = false;
 
-    IDParser(String id) {
+    public IDParser(String id) {
         if (id == null || id.equals("")) {
             id = "64|stone";
         }
