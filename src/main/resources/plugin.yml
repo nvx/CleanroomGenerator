@@ -3,6 +3,6 @@ name: ${project.artifactId}
 version: ${project.version}
 api-version: 1.13
 website: ${plugin.website}
-author: ${plugin.author}
+author: ${plugin.authors}
 description: ${project.description}
 load: STARTUP

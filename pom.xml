@@ -11,17 +11,25 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <plugin.author>NVX (Neo_Vortex)</plugin.author>
+        <plugin.authors>NVX (Neo_Vortex), LuciferMorningstarDev</plugin.authors>
         <plugin.website>https://dev.bukkit.org/projects/cleanroomgenerator</plugin.website>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
+        <!-- old bukkit version provided by spigot
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.13.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency> <!-- replaced with new 1.17 bukkit version where still old methods are present but the new methods are implemented too -->
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
