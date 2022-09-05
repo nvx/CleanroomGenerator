@@ -56,7 +56,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             String tokens[];
             String parts[];
 
-            parts = id.split(",");
+            parts = id.split("!");
             tokens = parts[0].split("[|]");
 
             try {
