@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -17,6 +18,7 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
     private Logger log = Logger.getLogger("Minecraft");
     private BlockData[] layerBlock;
     private int[] layerHeight;
+    private Biome worldBiome;
     private boolean noBedrock = false;
     private boolean newHeight = false;
 
@@ -52,8 +54,18 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             }
 
             String tokens[];
+            String parts[];
 
-            tokens = id.split("[|]");
+            parts = id.split("!");
+            tokens = parts[0].split("[|]");
+
+            if(parts.length > 1) {
+                try {
+                    worldBiome = Biome.valueOf(parts[1].toUpperCase());
+                }catch (Exception e){
+                    log.warning("[CleanroomGenerator] Invalid biome '" + parts[1] + "'.");
+                }
+            }
 
             if ((tokens.length % 2) != 0) throw new Exception();
 
@@ -104,6 +116,13 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             y = -64;
         }
         for (int i = 0; i < layerBlock.length; i++) {
+            if(worldBiome != null) {
+                for (int i2 = 0; i2 < 16; i2++) {
+                    for (int i3 = 0; i3 < 16; i3++) {
+                        biome.setBiome(i2, i3, worldBiome);
+                    }
+                }
+            }
             chunk.setRegion(0, y, 0, 16, y + layerHeight[i], 16, layerBlock[i]);
             y += layerHeight[i];
         }
