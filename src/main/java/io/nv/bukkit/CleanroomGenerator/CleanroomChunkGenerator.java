@@ -117,8 +117,8 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
         }
         for (int i = 0; i < layerBlock.length; i++) {
             if(worldBiome != null) {
-                for (int i2 = 0; i2 < 15; i2++) {
-                    for (int i3 = 0; i3 < 15; i3++) {
+                for (int i2 = 0; i2 < 16; i2++) {
+                    for (int i3 = 0; i3 < 16; i3++) {
                         biome.setBiome(i2, i3, worldBiome);
                     }
                 }
