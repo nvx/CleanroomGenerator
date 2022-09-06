@@ -59,13 +59,11 @@ public class CleanroomChunkGenerator extends ChunkGenerator {
             parts = id.split("!");
             tokens = parts[0].split("[|]");
 
-            try {
-                worldBiome = Biome.valueOf(parts[1].toUpperCase());
-            }catch (Exception e){
-                try{
+            if(parts.length > 1) {
+                try {
+                    worldBiome = Biome.valueOf(parts[1].toUpperCase());
+                }catch (Exception e){
                     log.warning("[CleanroomGenerator] Invalid biome '" + parts[1] + "'.");
-                }catch (Exception e1){
-
                 }
             }
 
